@@ -11,6 +11,7 @@ impl Check {
     }
 
     pub fn jpeg(&self) -> Option<Jpeg> {
+        
         if let Ok(x) = Jpeg::check(&self.file) {
             return x;
         } else {

@@ -16,12 +16,12 @@ impl Jpeg {
             Err(s) => Err(s),
         }
     }
-
+    todo!("Rewrite to actually work with the io library!");
     fn is_raw(file: &str) -> Result<bool, String> {
         let file_path = Path::new(&file);
-
         match File::open(file_path) {
             Ok(mut f) => {
+                println!("opened file");
                 let mut buffer = [0; 4];
                 match f.read(&mut buffer) {
                     Ok(_) => {
@@ -31,10 +31,10 @@ impl Jpeg {
                         } else {
                             return Ok(false);
                         }
-                    }
+                    },
                     Err(_) => Err("Unable to read bytes to Buffer!".to_owned()),
                 }
-            }
+            },
             Err(_) => Err("Unable to open file".to_owned()),
         }
     }
@@ -51,7 +51,7 @@ mod tests {
         match super::Jpeg::check("./test/images/test.Jpeg") {
             Ok(Some(t)) => t,
             Ok(None) => super::Jpeg::Jpeg2000,
-            Err(e) => println!("{}",e)
+            Err(e) => println!("{}", e),
         };
 
         assert_eq!(2 + 2, 4);
