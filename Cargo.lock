@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "validate"
-version = "0.1.0"
+name = "arbitor"
+version = "0.0.1"

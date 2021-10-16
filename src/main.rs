@@ -1,5 +1,5 @@
-use validate::filetype::Check;
-use validate::formats::Jpeg;
+use arbitor::filetype::Check;
+use arbitor::formats::Jpeg;
 
 
 fn main() {
