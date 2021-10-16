@@ -4,16 +4,16 @@ use std::io::prelude::*;
 use std::path::Path;
 
 impl Jpeg {
-    pub(crate) fn check(file: &str) -> Option<Self> {
+    pub(crate) fn check(file: &str) -> Result<Option<Self>, String> {
         match Self::is_raw(&file) {
             Ok(x) => match x {
-                true => Some(Jpeg::JPEGraw),
+                true => Ok(Some(Jpeg::JPEGraw)),
                 false => match Self::is_2000(&file) {
-                    true => Some(Jpeg::Jpeg2000),
-                    false => None,
+                    true => Ok(Some(Jpeg::Jpeg2000)),
+                    false => Ok(None),
                 },
             },
-            Err(s) => eprintln!("{}", s),
+            Err(s) => Err(s),
         }
     }
 
@@ -49,8 +49,9 @@ mod tests {
     #[test]
     fn gets_bytes() {
         match super::Jpeg::check("./test/images/test.Jpeg") {
-            Some(t) => t,
-            None => super::Jpeg::Jpeg2000,
+            Ok(Some(t)) => t,
+            Ok(None) => super::Jpeg::Jpeg2000,
+            Err(e) => println!("{}",e)
         };
 
         assert_eq!(2 + 2, 4);
