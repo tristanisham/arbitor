@@ -1,21 +1,25 @@
+use crate::formats::Jpeg;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
-use crate::formats::Jpeg as Jpeg;
 
 impl Jpeg {
     pub(crate) fn check(file: &str) -> Option<Self> {
         match Self::is_raw(&file) {
-            true => Some(Jpeg::JPEGraw),
-            false => match Self::is_2000(&file) {
-                true => Some(Jpeg::Jpeg2000),
-                false => None
-            }
+            Ok(x) => match x {
+                true => Some(Jpeg::JPEGraw),
+                false => match Self::is_2000(&file) {
+                    true => Some(Jpeg::Jpeg2000),
+                    false => None,
+                },
+            },
+            Err(s) => eprintln!("{}", s),
         }
     }
 
-    fn is_raw(file: &str) -> bool {
+    fn is_raw(file: &str) -> Result<bool, String> {
         let file_path = Path::new(&file);
+
         match File::open(file_path) {
             Ok(mut f) => {
                 let mut buffer = [0; 4];
@@ -23,15 +27,15 @@ impl Jpeg {
                     Ok(_) => {
                         let val = vec![255, 216, 244, 219];
                         if val == buffer {
-                            return true;
+                            return Ok(true);
                         } else {
-                            return false;
+                            return Ok(false);
                         }
                     }
-                    Err(_) => false,
+                    Err(_) => Err("Unable to read bytes to Buffer!".to_owned()),
                 }
             }
-            Err(_) => false,
+            Err(_) => Err("Unable to open file".to_owned()),
         }
     }
 
